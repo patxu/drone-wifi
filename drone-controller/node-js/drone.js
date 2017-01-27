@@ -15,13 +15,13 @@ client
   	this.stop();
   	this.back(0.10);
   }).after(time, function() {
-  	this.stop();
-  	this.left(0.10);
+    this.stop();
+    this.left(0.10);
   }).after(time, function() {
-  	this.stop();
-  	this.front(0.10);
+    this.stop();
+    this.front(0.10);
   }).after(time, function() {
-  	this.stop();
-  	//client.animate('flipLeft', 1000);
-  	this.land();
+    this.stop();
+    //client.animate('flipLeft', 1000);
+    this.land();
   });
