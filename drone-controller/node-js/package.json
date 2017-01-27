@@ -1,0 +1,19 @@
+{
+  "name": "drone-wifi-node",
+  "version": "1.0.0",
+  "description": "Drone Wifi Node.js project",
+  "author": "",
+  "contributors": [
+    {}
+  ],
+  "scripts": {},
+  "main": "drone.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/patxu/drone-wifi"
+  },
+  "dependencies": {
+    "ar-drone": "^0.3.3"
+  },
+  "license": "MIT"
+}
