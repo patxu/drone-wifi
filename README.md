@@ -1,5 +1,8 @@
 # drone-wifi
 
+## Architecture
+[Node.js Drone Package](https://github.com/felixge/node-ar-drone)
+
 ## Setup
 The **Drone Controller** files can be found in `drone-controller`.
 
