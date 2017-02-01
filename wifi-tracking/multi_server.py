@@ -33,8 +33,8 @@ def on_new_client(clientsocket,addr):
 
           try:
               name = int(data_col[0]) - 1;
-              signal_strength = data_col[1][:-2]
-
+              signal_strength = data_col[8][:-2]
+              print "RSSI: ", signal_strength
               curr_data[name] = abs(int(signal_strength));
 
               plt.clf()
@@ -44,7 +44,7 @@ def on_new_client(clientsocket,addr):
               plt.xticks(labels, curr_names)
               plt.ylabel('Signal Stength')
               plt.title('Triangulation')
-
+              plt.ylim(20, 120)
               plt.draw()
               plt.pause(0.01)
 
