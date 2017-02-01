@@ -56,8 +56,8 @@ def on_new_client(clientsocket,addr):
     clientsocket.close()
 
 s = socket.socket()         # Create a socket object
-host = "localhost" # Get local machine name
-port = 9998                # Reserve a port for your service.
+host = "0.0.0.0" # Get local machine name
+port = 9999                # Reserve a port for your service.
 
 print 'Server started!'
 print 'Waiting for clients...'
