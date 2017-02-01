@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #Start Graph
-curr_data = [30,30,30]
+curr_data = [0, 0, 0]
 curr_names = ("Node 1", "Node 2", "Node 3")
 labels =  np.arange(len(curr_names))
 
@@ -43,8 +43,8 @@ while True:
 
             try:
                 name = int(data_col[0]) - 1;
-                signal_strength = data_col[1][:-2]
-
+                signal_strength = data_col[8][:-2]
+                print "RSSI: ", signal_strength
                 curr_data[name] = abs(int(signal_strength));
 
                 plt.clf()
@@ -54,14 +54,14 @@ while True:
                 plt.xticks(labels, curr_names)
                 plt.ylabel('Signal Stength')
                 plt.title('Triangulation')
-
+                plt.ylim(20, 120)
                 plt.draw()
                 plt.pause(0.01)
 
             except Exception, e:
-                print "Invalid Input"
+                pass # print "Invalid Input: " + ' '.join(data_col)
 
-        print "Client Says: "+data
+        #  print "Client Says: "+data
         conn.sendall("\n")
 
     except socket.error:
