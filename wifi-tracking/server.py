@@ -19,7 +19,6 @@ plt.draw()
 plt.pause(0.01)
 #########################
 
-
 host = 'localhost'        # Symbolic name meaning all available interfaces
 port = 9999     # Arbitrary non-privileged port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
