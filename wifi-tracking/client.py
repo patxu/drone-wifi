@@ -13,7 +13,7 @@ if __name__ == "__main__":
     # print sys.argv
 
     print "Hello :)"
-    args = ['sudo', 'tcpdump', '-s', '0', '-tttt', '-vvvv', '-l', '-i', 'wlan0', 'ether', 'src', 'f4:f5:24:3c:8e:08']
+    args = ['sudo', 'tcpdump', '-s', '0', '-tttt', '-vvvv', '-l', '-i', 'mon0', 'ether', 'src', 'f4:f5:24:3c:8e:08']
     p = sub.Popen(args, stdout=sub.PIPE)
 
     for row in iter(p.stdout.readline, b''):
