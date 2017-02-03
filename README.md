@@ -3,6 +3,8 @@
 ## Architecture
 [Node.js Drone Package](https://github.com/felixge/node-ar-drone)
 
+to get drone PNG feed install this module using "npm install ar-drone-png-stream"
+
 ## Setup
 The **Drone Controller** files can be found in `drone-controller`.
 
