@@ -9,6 +9,9 @@ The **Drone Controller** files can be found in `drone-controller`.
 - ### Node.js
   The Node.js controller is found at `node-js`.
   - `npm install`
+  
+  to get drone PNG feed install ar-drone-png-stream (https://github.com/Soarez/ar-drone-png-stream) module using 
+  - `npm install ar-drone-png-stream`
 
 - ### ROS ARDrone Autonomy
   - primarily followed [this guide](http://wiki.ros.org/tum_ardrone)
