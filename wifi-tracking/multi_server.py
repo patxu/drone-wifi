@@ -11,17 +11,6 @@ array_lock = threading.Lock();
 curr_data = [0,0,0]
 curr_names = ("Node 1", "Node 2", "Node 3")
 labels =  np.arange(len(curr_names))
-
-plt.ion()
-
-colors = ['r', 'g', 'b']
-plt.bar(labels, curr_data, align='center', alpha=0.5, color = colors)
-plt.xticks(labels, curr_names)
-plt.ylabel('Signal Stength')
-plt.title('Triangulation')
- 
-plt.draw()
-plt.pause(0.01)
 #########################
 
 def on_new_client(clientsocket,addr):
@@ -54,6 +43,19 @@ def on_new_client(clientsocket,addr):
     clientsocket.close()
 
 def plot_thread():
+  plt.ion()
+
+  colors = ['r', 'g', 'b']
+
+  fig = plt.figure()
+  bars = plt.bar(labels, [0,0,0], align='center', alpha=0.5, color = colors)
+  plt.xticks(labels, curr_names)
+  plt.ylabel('Signal Stength')
+  plt.title('Triangulation')
+  plt.ylim(20, 120)
+   
+  plt.draw()
+
   while True:
     plt.clf()
 
@@ -69,10 +71,10 @@ def plot_thread():
     plt.ylabel('Signal Stength')
     plt.title('Triangulation')
     plt.ylim(20, 120)
-    plt.draw()
-    plt.pause(0.01)
 
-    time.sleep(0.3)
+    plt.draw()
+
+    plt.pause(0.2)
 
 s = socket.socket()         # Create a socket object
 host = "0.0.0.0" # Get local machine name
