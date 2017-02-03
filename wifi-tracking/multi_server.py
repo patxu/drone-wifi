@@ -4,6 +4,8 @@ import threading
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+import re
+import sys
 
 array_lock = threading.Lock();
 
@@ -26,12 +28,21 @@ def on_new_client(clientsocket,addr):
 
           try:
               name = int(data_col[0]) - 1;
-              signal_strength = data_col[8][:-2]
+
+              #signal_strength = data_col[8][:-2]
+              signal_strength = re.search("(?<= -).*(?=dB)", data_line)
+
+              if signal_strength:
+                print signal_strength.group()
+                signal_strength = abs(int(signal_strength.group()))
+              else:
+                signal_strength = 0
+
               print "RSSI: ", signal_strength
 
               array_lock.acquire()
 
-              curr_data[name] = abs(int(signal_strength));
+              curr_data[name] = signal_strength;
 
               array_lock.release()
 
@@ -78,7 +89,7 @@ def plot_thread():
 
 s = socket.socket()         # Create a socket object
 host = "0.0.0.0" # Get local machine name
-port = 9998                # Reserve a port for your service.
+port = int(sys.argv[1])                # Reserve a port for your service.
 
 print 'Server started!'
 print 'Waiting for clients...'
