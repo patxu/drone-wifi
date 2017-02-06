@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "ar-drone": "^0.3.3",
-    "ar-drone-png-stream": "^2.0.0"
+    "ar-drone-png-stream": "^2.0.0",
+    "opencv": "^6.0.0"
   },
   "license": "MIT"
 }
