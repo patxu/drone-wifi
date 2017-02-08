@@ -2,7 +2,19 @@ var arDrone = require('ar-drone');
 var client  = arDrone.createClient();
 var http = require('http');
 var cv = require('opencv');
-var fs = require('fs');
+
+// consts for detect shapes
+var lowThresh = 0;
+var highThresh = 100;
+var nIters = 2;
+var minArea = 8000;
+var maxArea = 25000;
+var BLUE  = [0, 255, 0]; // B, G, R
+var RED   = [0, 0, 255]; // B, G, R
+var GREEN = [0, 255, 0]; // B, G, R
+var WHITE = [255, 255, 255]; // B, G, R
+
+client.config('video:video_channel', 3);
 
 
 var png = null;
@@ -22,25 +34,44 @@ var server = http.createServer(function(req, res) {
 
   png.on('data', sendPng);
 
-// example face classifier
+  // example face classifier
   function sendPng(buffer) {
     cv.readImage(buffer, function(err, im){
       if (err) throw err;
       if (im.width() < 1 || im.height() < 1) throw new Error('Image has no size');
 
-      im.detectObject("data/haarcascade_frontalface_alt.xml", {}, function(err, faces){
-        if (err) throw err;
+      var out = new cv.Matrix(im.height(), im.width());
+      var im_canny = im.copy();
+      im_canny.convertGrayscale();
+      im_canny.canny(lowThresh, highThresh);
+      im_canny.dilate(nIters);
 
-        for (var i = 0; i < faces.length; i++){
-          var face = faces[i];
-          im.ellipse(face.x + face.width / 2, face.y + face.height / 2,
-             face.width / 2, face.height / 2);
+      contours = im_canny.findContours();
+
+      for (i = 0; i < contours.size(); i++) {
+
+        if (contours.area(i) < minArea) continue;
+        if (contours.area(i) > maxArea) continue;
+
+        var arcLength = contours.arcLength(i, true);
+        contours.approxPolyDP(i, 0.1 * arcLength, true);
+
+        switch(contours.cornerCount(i)) {
+          // case 3:
+          //   out.drawContour(contours, i, GREEN);
+          //   break;
+          case 4:
+            out.drawContour(contours, i, RED);
+            break;
+          // default:
+            // out.drawContour(contours, i, WHITE);
         }
+      }
 
-      res.write('--daboundary\nContent-Type: image/png\nContent-length: ' + im.toBuffer().length + '\n\n');
-      res.write(im.toBuffer());
-
-      });
+      var image = out.toBuffer();
+      // var image = im.toBuffer();
+      res.write('--daboundary\nContent-Type: image/png\nContent-length: ' + image.length + '\n\n');
+      res.write(image);
     });
 
   }
