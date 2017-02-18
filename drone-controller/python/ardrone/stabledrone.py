@@ -18,8 +18,11 @@ if len(sys.argv) < 2:
     print "Please pass in the IP Address of the drone as a parameter, 192.168.1.1 by default"
     sys.exit(0)
 
-drone = ps_drone.Drone()                                       # Start using drone
-drone.startup(sys.argv[1])                                     # Connects to drone and starts subprocesses
+ip = sys.argv[1] if len(sys.argv) > 1 else "192.168.1.1"
+port = sys.argv[2] if len(sys.argv) > 2 else 5554
+
+drone = ps_drone.Drone()                       # Start using drone
+drone.startup(ip, port)                        # Connects to drone and starts subprocesses
 
 print drone.DroneIP
 
@@ -38,7 +41,7 @@ drone.getSelfRotation(5)                                         # Getting value
 print "Auto-alternation: "+str(drone.selfRotation)+" dec/sec"    # Showing value for auto-alteration
 
 drone.takeoff()                                                  # Fly, drone, fly !
-while drone.NavData["demo"][0][2]:     time.sleep(0.1)           # Wait until the drone is really flyi
+while drone.NavData["demo"][0][2]:     time.sleep(0.1)           # Wait until the drone is really flying
 drone_iniz, drone_inix, drone_iniy = 0, 0, 0
 
 ##### Mainprogram begin #####
@@ -49,6 +52,8 @@ drone.setConfig("detect:detections_select_h", "0")           # Detect "Oriented 
 drone.setConfig("detect:detections_select_v", "128")             # No detection with ground cam
 CDC = drone.ConfigDataCount
 while CDC == drone.ConfigDataCount:    time.sleep(0.01)        # Wait until configuration has been set
+
+#drone.setConfig("control:flying_mode", "2")                   # auto stabilization of drone distance from marker
 
 # Get detections
 stop = False
@@ -63,7 +68,7 @@ while not stop:
     tagZ =   drone.NavData["vision_detect"][6]                 # Distance(s)
     tagRot = drone.NavData["vision_detect"][7]                 # Orientation(s)
 
-    # Control drone detections
+    # Drone stabilization
     if tagNum:
         if not drone_iniz:
             drone_inix, drone_iniy, drone_iniz = tagX[0], tagY[0], tagZ[0]
