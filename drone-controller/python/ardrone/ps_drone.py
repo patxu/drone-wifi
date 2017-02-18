@@ -102,8 +102,13 @@ class Drone(object):
 		self.__pLineUpStr = 			"\033[1A"
 		
 	###### Connect to the drone and start all procedures
-	def startup(self):
+	def startup(self, droneIP = None):
 		# Check for drone in the network and wake it up
+
+		if (droneIP != None):
+			self.DroneIP = droneIP
+			print self.DroneIP
+
 		try:
 			socket.socket().connect((self.DroneIP, 21))
 			socket.socket().close()

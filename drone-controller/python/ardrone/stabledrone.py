@@ -14,8 +14,14 @@
 import time, sys
 import ps_drone                                                # Import PS-Drone
 
+if len(sys.argv) < 2:
+    print "Please pass in the IP Address of the drone as a parameter, 192.168.1.1 by default"
+    sys.exit(0)
+
 drone = ps_drone.Drone()                                       # Start using drone
-drone.startup()                                                # Connects to drone and starts subprocesses
+drone.startup(sys.argv[1])                                     # Connects to drone and starts subprocesses
+
+print drone.DroneIP
 
 drone.reset()                                                  # Sets the drone's status to good (LEDs turn green when red)
 while (drone.getBattery()[0] == - 1):   time.sleep(0.1)        # Wait until the drone has done its reset
