@@ -21,7 +21,7 @@ if len(sys.argv) < 2:
 ip = sys.argv[1] if len(sys.argv) > 1 else "192.168.1.1"
 
 drone = ps_drone.Drone()                       # Start using drone
-drone.startup(ip)                        # Connects to drone and starts subprocesses
+drone.startup(ip)                              # Connects to drone and starts subprocesses
 
 print "droneIP: " + drone.DroneIP
 
@@ -52,7 +52,7 @@ drone.setConfig("detect:detections_select_v", "128")             # No detection 
 CDC = drone.ConfigDataCount
 while CDC == drone.ConfigDataCount:    time.sleep(0.01)        # Wait until configuration has been set
 
-#drone.setConfig("control:flying_mode", "2")                   # auto stabilization of drone distance from marker
+drone.setConfig("control:flying_mode", "2")                   # auto stabilization of drone distance from marker
 
 # Get detections
 stop = False
@@ -68,24 +68,24 @@ while not stop:
     tagRot = drone.NavData["vision_detect"][7]                 # Orientation(s)
 
     # Drone stabilization
-    if tagNum:
-        if not drone_iniz:
-            drone_inix, drone_iniy, drone_iniz = tagX[0], tagY[0], tagZ[0]
-            print "Initial X, Y, Z:", drone_inix, drone_iniy, drone_iniz
-        elif tagZ[0] <= drone_iniz:
-            drone.moveUp(0.2)
-            print "Moving Up"
-        elif tagZ[0] > drone_iniz+10:
-            drone.moveDown(0.2)
-            print "Moving Down"
-        elif drone_iniz < tagZ[0] < drone_iniz+10:
-            drone.stop()
-            print "No Movement"
-
-        for i in range (0,tagNum):
-            print "Tag no "+str(i)+" : X= "+str(tagX[i])+"  Y= "+str(tagY[i])+"  Dist= "+str(tagZ[i])+"  Orientation= "+str(tagRot[i])
-    else:
-        drone.stop()
-    #else:   print "No tag detected"
+    # if tagNum:
+    #     if not drone_iniz:
+    #         drone_inix, drone_iniy, drone_iniz = tagX[0], tagY[0], tagZ[0]
+    #         print "Initial X, Y, Z:", drone_inix, drone_iniy, drone_iniz
+    #     elif tagZ[0] <= drone_iniz:
+    #         drone.moveUp(0.2)
+    #         print "Moving Up"
+    #     elif tagZ[0] > drone_iniz+10:
+    #         drone.moveDown(0.2)
+    #         print "\t\tMoving Down"
+    #     elif drone_iniz < tagZ[0] < drone_iniz+10:
+    #         drone.stop()
+    #         print "\t\t\t\tNo Movement"
+    #
+    #     # for i in range (0,tagNum):
+    #     #     print "Tag no "+str(i)+" : X= "+str(tagX[i])+"  Y= "+str(tagY[i])+"  Dist= "+str(tagZ[i])+"  Orientation= "+str(tagRot[i])
+    # else:
+    #     drone.stop()
+    #     print "\t\t\t\t\t\tNo tag detected"
 
 drone.land()
