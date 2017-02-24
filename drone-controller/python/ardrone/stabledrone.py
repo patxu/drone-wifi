@@ -19,12 +19,11 @@ if len(sys.argv) < 2:
     sys.exit(0)
 
 ip = sys.argv[1] if len(sys.argv) > 1 else "192.168.1.1"
-port = sys.argv[2] if len(sys.argv) > 2 else 5554
 
 drone = ps_drone.Drone()                       # Start using drone
-drone.startup(ip, port)                        # Connects to drone and starts subprocesses
+drone.startup(ip)                        # Connects to drone and starts subprocesses
 
-print drone.DroneIP
+print "droneIP: " + drone.DroneIP
 
 drone.reset()                                                  # Sets the drone's status to good (LEDs turn green when red)
 while (drone.getBattery()[0] == - 1):   time.sleep(0.1)        # Wait until the drone has done its reset
