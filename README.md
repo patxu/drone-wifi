@@ -1,17 +1,24 @@
-# drone-wifi
+# Drone Wifi Triangulation
+Asad Alavi, Debanjum Solanky, Pat Xu, Vishal Gaurav
 
 ## Architecture
-[Node.js Drone Package](https://github.com/felixge/node-ar-drone)
+- ARDrone
+  - [SDK](http://developer.parrot.com/products.html)
+  - [Documentation](http://www.msh-tools.com/ardrone/ARDrone_Developer_Guide.pdf)
 
-## Setup
+
 The **Drone Controller** files can be found in `drone-controller`.
 
+- ### Python
+  - ARDrone SDK ([github](https://github.com/faturita/python-ardrone))
+
 - ### Node.js
-  The Node.js controller is found at `node-js`.
-  - `npm install`
-  
-  to get drone PNG feed install ar-drone-png-stream (https://github.com/Soarez/ar-drone-png-stream) module using 
-  - `npm install ar-drone-png-stream`
+  - [Node.js Drone Package](https://github.com/felixge/node-ar-drone)  
+  - The Node.js controller is found at `node-js`.
+    - `npm install`
+
+  - to get drone PNG feed install `ar-drone-png-stream` (https://github.com/Soarez/ar-drone-png-stream) module using
+    - `npm install ar-drone-png-stream`
 
 - ### ROS ARDrone Autonomy
   - primarily followed [this guide](http://wiki.ros.org/tum_ardrone)
