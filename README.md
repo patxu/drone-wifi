@@ -1,6 +1,10 @@
 # Drone Wifi Triangulation
 Asad Alavi, Debanjum Solanky, Pat Xu, Vishal Gaurav
 
+We detect a specific wifi signal with a Raspberry Pi mounted on a Parrot ARDrone. This README has most of the important details, but we discuss the process in detail in three papers. [Paper 1](https://docs.google.com/document/d/1XIbju8fm_IRwirzsdrcrM29-ahBGkG1RVNki1plZxBo/edit?usp=sharing), [Paper 2](https://docs.google.com/document/d/1kJNB-iXc_bjHV0GzgPN8mEg7z6CxGRbBdsk2Z4-aWfo/edit?usp=sharing), [Paper 3](https://docs.google.com/document/d/13-lwsP2QbEAiy2kiwCjI_P3fWlUSXTzz47MASvEG2Uk/edit?usp=sharing).
+
+<img src="imgs/ardrone.jpg" height=200px>
+
 ## Architecture
 - ARDrone
   - [SDK](http://developer.parrot.com/products.html)
@@ -11,6 +15,9 @@ The **Drone Controller** files can be found in `drone-controller`.
 
 - ### Python
   - ARDrone SDK ([github](https://github.com/faturita/python-ardrone))
+  - our `stabledrone.py` script calls built-in capabilities of the ARDrone to detect and hover over their supplied marker.
+
+  <img src="imgs/ardrone-roundel.png" height=200px>
 
 - ### Node.js
   - [Node.js Drone Package](https://github.com/felixge/node-ar-drone)  
