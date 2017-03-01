@@ -5,15 +5,17 @@ import subprocess as sub
 
 if __name__ == "__main__":
     # connect client to server
-    host = "localhost"
-    port = int(sys.argv[1])                   # The same port as used by the server
-    name = int(sys.argv[2])
+    host = sys.argv[1]
+    port = int(sys.argv[2])                   # The same port as used by the server
+    name = int(sys.argv[3])
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((host, port))
     # print sys.argv
 
+    mac = '9c:b6:d0:15:e3:eb'
+
     print "Hello :)"
-    args = ['sudo', 'tcpdump', '-s', '0', '-tttt', '-vvvv', '-l', '-i', 'mon0', 'ether', 'src', 'f4:f5:24:3c:8e:08']
+    args = ['sudo', 'tcpdump', '-s', '0', '-tttt', '-vvvv', '-l', '-i', 'mon0', 'ether', 'src', mac]
     p = sub.Popen(args, stdout=sub.PIPE)
 
     for row in iter(p.stdout.readline, b''):
@@ -28,3 +30,4 @@ if __name__ == "__main__":
     # close connection
     s.close()
     print('Received', repr(data))
+
