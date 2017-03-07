@@ -15,36 +15,61 @@ labels = np.arange(len(curr_names))
 
 
 def on_new_client(clientsocket, addr):
+    # Signals Tracking
+    signals, dblist = [[], []], [0, 0, 0]
+    d_thresh, dbupdate = 4, False
+    signal_strength = 0
+
     while True:
         data = clientsocket.recv(1024)
-
         if not data:
             break
 
         data_recieved = data.split('\n')
-
         for data_line in data_recieved:
             data_col = data_line.split(" ")
 
             try:
                 name = int(data_col[0]) - 1
+                # extract signal(db) strength string from data
+                db_string = re.search("(?<= -).*(?=dB)", data_line)
+                # if found signal strength(dB) in data
+                if db_string:
+                    # append clients db strength value to its signal array sublist
+                    signals[name].append(abs(int(db_string.group())))
 
-                signal_strength = re.search("(?<= -).*(?=dB)", data_line)
-                if signal_strength:
-                    print signal_strength.group()
-                    signal_strength = abs(int(signal_strength.group()))
-                else:
-                    signal_strength = 0
+                    # get new (average) signal strength, once enough data points gathered from a tracker
+                    if len(signals[name]) >= 10:
+                        dbupdate = True
+                        new_signal_strength = sum(signals[name])/len(signals[name])
+                        print "Client: {0}, RSSI: {1}".format(name, new_signal_strength)
 
-                print "Client: {0}, RSSI: {1}".format(name, signal_strength)
+                        # identify direction of movement of target
+                        # same position
+                        if dblist[name] - d_thresh < new_signal_strength < dblist[name] + d_thresh:
+                            # curr_data[3] = 44
+                            # print "Same as before from {0}".format(name)
+                            continue
+                        # move towards tracker
+                        elif new_signal_strength < dblist[name]:
+                            # curr_data[3] = 69
+                            print "Closer to {0}".format(name+1)
+                        else:  # move away from tracker
+                            # curr_data[3] = 21
+                            print "Further from {0}".format(name+1)
+                        dblist[name] = new_signal_strength
+
+                        signal_strength = new_signal_strength
+                        signals[name] = []  # reset signals from tracker
 
                 # array_lock.acquire()
-                if signal_strength != 0:
+                if dbupdate:
                     curr_data[name] = signal_strength
+                    dbupdate = False
                 # array_lock.release()
 
-            except Exception:
-                print "Invalid Input"
+            except Exception, e:
+                pass # print e
 
         # print "Client Says: "+data
         clientsocket.sendall("\n")
@@ -61,7 +86,7 @@ def plot_thread():
     plt.xticks(labels, curr_names)
     plt.ylabel('Signal Stength')
     plt.title('Triangulation')
-    plt.ylim(20, 120)
+    plt.ylim(20, 70)
 
     plt.draw()
 
@@ -77,7 +102,7 @@ def plot_thread():
         plt.xticks(labels, curr_names)
         plt.ylabel('Signal Stength')
         plt.title('Triangulation')
-        plt.ylim(20, 120)
+        plt.ylim(20, 70)
 
         plt.draw()
 
