@@ -9,15 +9,16 @@ import sys
 
 array_lock = threading.Lock()
 # Start Graph
-curr_data = [0, 0, 0]
-curr_names = ("Node 1", "Node 2", "Node 3")
+curr_data = [0, 0]
+scale = [1, 0.7]
+curr_names = ("Node 1", "Node 2")
 labels = np.arange(len(curr_names))
 
 
 def on_new_client(clientsocket, addr):
     # Signals Tracking
-    signals, dblist = [[], []], [0, 0, 0]
-    d_thresh, dbupdate = 4, False
+    signals, dblist = [[], []], [0, 0]
+    d_thresh, dbupdate = 3, False
     signal_strength = 0
 
     while True:
@@ -39,26 +40,22 @@ def on_new_client(clientsocket, addr):
                     signals[name].append(abs(int(db_string.group())))
 
                     # get new (average) signal strength, once enough data points gathered from a tracker
-                    if len(signals[name]) >= 10:
+                    if len(signals[name]) >= 5:
                         dbupdate = True
-                        new_signal_strength = sum(signals[name])/len(signals[name])
+                        new_signal_strength = scale[name]*sum(signals[name])/len(signals[name])
                         print "Client: {0}, RSSI: {1}".format(name, new_signal_strength)
 
                         # identify direction of movement of target
                         # same position
                         if dblist[name] - d_thresh < new_signal_strength < dblist[name] + d_thresh:
-                            # curr_data[3] = 44
                             # print "Same as before from {0}".format(name)
-                            continue
+                            pass
                         # move towards tracker
                         elif new_signal_strength < dblist[name]:
-                            # curr_data[3] = 69
                             print "Closer to {0}".format(name+1)
                         else:  # move away from tracker
-                            # curr_data[3] = 21
                             print "Further from {0}".format(name+1)
                         dblist[name] = new_signal_strength
-
                         signal_strength = new_signal_strength
                         signals[name] = []  # reset signals from tracker
 
@@ -79,10 +76,10 @@ def on_new_client(clientsocket, addr):
 def plot_thread():
     plt.ion()
 
-    colors = ['r', 'g', 'b']
+    colors = ['r', 'g']
 
     fig = plt.figure()
-    bars = plt.bar(labels, [0,0,0], align='center', alpha=0.5, color=colors)
+    bars = plt.bar(labels, [0,0], align='center', alpha=0.5, color=colors)
     plt.xticks(labels, curr_names)
     plt.ylabel('Signal Stength')
     plt.title('Triangulation')
@@ -93,7 +90,7 @@ def plot_thread():
     while True:
         plt.clf()
 
-        colors = ['r', 'g', 'b']
+        colors = ['r', 'g']
 
         array_lock.acquire()
         plt.bar(labels, curr_data, align='center', alpha=0.5, color=colors)

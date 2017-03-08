@@ -1,4 +1,3 @@
-import fileinput
 import socket
 import sys
 import subprocess as sub
@@ -12,7 +11,8 @@ if __name__ == "__main__":
     s.connect((host, port))
     # print sys.argv
 
-    mac = '9c:b6:d0:15:e3:eb'
+    macs = {'vp': '4c:66:41:3f:61:7a', 'ap': 'ec:1f:72:34:97:2b', 'dp': 'f4:f5:23:3c:8e:08'}
+    mac = macs[sys.argv[4]]
 
     print "Hello :)"
     args = ['sudo', 'tcpdump', '-s', '0', '-tttt', '-vvvv', '-l', '-i', 'mon0', 'ether', 'src', mac]
@@ -22,12 +22,5 @@ if __name__ == "__main__":
         s.sendall(str(name) + " " + row)
         print row
 
-    # # read data stream from stdin and push to client over tcp4 socket
-    # for line in fileinput.input():
-    #     s.sendall("1 " + line)
-    #     print line
-
     # close connection
     s.close()
-    print('Received', repr(data))
-
