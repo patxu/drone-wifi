@@ -35,9 +35,15 @@ if __name__ == "__main__":
     p = sub.Popen(args, stdout=sub.PIPE)
 
     # witrack variable
-    moving, startTime = False, 0
+    moving = True
+    first = True
+    startTime = time.time()
     dblist, d_thresh = 0, 3
     signals = list()
+    moveTime = 5
+    numFurther = 0
+    direction = 'forward'
+    speed = 0.1
 
     for row in iter(p.stdout.readline, b''):
         keypress = drone.getKey()
@@ -49,9 +55,10 @@ if __name__ == "__main__":
             exit(0)
 
         # stop moving if moving for more than 1s
-        if moving and time.time() - startTime >= 1.5:
+        if moving and time.time() - startTime >= moveTime:
             drone.stop()
             moving = False
+            signals = []
 
         # s.sendall(str(name) + " " + row)
         db_string = re.search("(?<= -).*(?=dB)", row)
@@ -64,28 +71,59 @@ if __name__ == "__main__":
                 new_signal_strength = sum(signals)/len(signals)
                 print "RSSI: {0},{1}".format(new_signal_strength, db_string.group())
 
-                # don't influence direction if moving
-                # if moving:  pass
+                if new_signal_strength > 30 and first:
+                    if direction == 'forward':
+                        drone.moveForward(speed)
+                    else:
+                        drone.moveBackward(speed)
+
+                    moving, first = True, False
+                    startTime = time.time()
+                    moveTime = 1
+                    numFurther = 0
+                    print "First Motion, Move {0}".format(direction)
+
                 # identify direction of movement of target
                 # same position
                 if dblist - d_thresh < new_signal_strength < dblist + d_thresh:
-                    # drone.moveForward(0.05)
+                    # drone.moveForward(speed)
+                    # print "Probe Forward"
                     # moving = True
                     # startTime = time.time()
-                    # print "Probe Forward"
+                    # moveTime = 2
                     pass
                 # move towards tracker
                 elif new_signal_strength < dblist and not moving:
-                    drone.moveBackward(0.05)
+                    if direction == 'forward':
+                        drone.moveForward(speed)
+                    else:
+                        drone.moveBackward(speed)
+
                     moving = True
                     startTime = time.time()
-                    print "Closer"
+                    moveTime = 1
+                    numFurther = 0
+                    print "Closer, Move {0}".format(direction)
+
                 # move away from tracker
                 elif not moving:
-                    drone.moveForward(0.05)
+                    if direction == 'forward':
+                        drone.moveForward(speed)
+                    else:
+                        drone.moveBackward(speed)
+
                     moving = True
                     startTime = time.time()
-                    print "Further"
+                    moveTime = 1
+                    numFurther = numFurther + 1
+
+                    if numFurther >= 2:
+                        numFurther = 0
+                        if direction == 'forward':
+                            direction = 'backward'
+                        else:
+                            direction = 'forward'
+                    print "Further, Move {0}".format(direction)
 
                 dblist = new_signal_strength
                 signal_strength = new_signal_strength
