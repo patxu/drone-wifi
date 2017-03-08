@@ -10,7 +10,7 @@ import sys
 array_lock = threading.Lock()
 # Start Graph
 curr_data = [0, 0]
-scale = [1, 0.7]
+scale = [1, 1]
 curr_names = ("Node 1", "Node 2")
 labels = np.arange(len(curr_names))
 
@@ -18,7 +18,7 @@ labels = np.arange(len(curr_names))
 def on_new_client(clientsocket, addr):
     # Signals Tracking
     signals, dblist = [[], []], [0, 0]
-    d_thresh, dbupdate = 3, False
+    d_thresh, dbupdate = 5, False
     signal_strength = 0
 
     while True:
@@ -40,10 +40,10 @@ def on_new_client(clientsocket, addr):
                     signals[name].append(abs(int(db_string.group())))
 
                     # get new (average) signal strength, once enough data points gathered from a tracker
-                    if len(signals[name]) >= 5:
+                    if len(signals[name]) >= 10:
                         dbupdate = True
                         new_signal_strength = scale[name]*sum(signals[name])/len(signals[name])
-                        print "Client: {0}, RSSI: {1}".format(name, new_signal_strength)
+                        # print "Client: {0}, RSSI: {1}".format(name, new_signal_strength)
 
                         # identify direction of movement of target
                         # same position
