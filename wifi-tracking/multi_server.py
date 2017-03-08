@@ -42,7 +42,11 @@ def on_new_client(clientsocket, addr):
                     if len(signals[name]) >= 10:
                         dbupdate = True
                         new_signal_strength = sum(signals[name])/len(signals[name])
-                        print "Client: {0}, RSSI: {1}".format(name, new_signal_strength)
+                        print "Client: {0}, RSSI: {1}".format(name+1, new_signal_strength)
+
+                        # write signal strength data to file
+                        f = open('RSSI_{0}.txt'.format(name+1), 'w')
+                        f.write("RSSI: {0}".format(new_signal_strength))
 
                         # identify direction of movement of target
                         # same position
